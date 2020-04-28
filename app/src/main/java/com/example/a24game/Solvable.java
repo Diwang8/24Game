@@ -253,7 +253,7 @@ public class Solvable {
         return combined;
     }
 
-    public void generateSolution() {
+    public void generateSolutionAsString() {
         if (isSolvable() == false) {
             solution = "no solution";
         } else {
