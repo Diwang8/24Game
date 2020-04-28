@@ -5,7 +5,19 @@
     <string name="practice_launch_button">Practice</string>
     <string name="coming_soon">Coming Soon!</string>
     <string name="backspace_symbol">⌫</string>
-    <string name="enter_solution">Solution</string>
+    <string name="enter_solution">Input Solution</string>
     <string name="clear_button">Clear</string>
     <string name="button_filler_text">24</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="times">×</string>
+    <string name="divides">/</string>
+    <string name="left_paren">(</string>
+    <string name="right_paren">)</string>
+    <string name="give_up">Give up</string>
+    <string name="submit">Submit</string>
+    <string name="give_up_text_solution">Oh no! One solution was %1$s.</string>
+    <string name="give_up_text_impossible">There were no solutions.</string>
+    <string name="submit_text_incorrect">Oops, that is incorrect.</string>
+    <string name="submit_text_correct">Congratulations, that is correct!</string>
 </resources>
