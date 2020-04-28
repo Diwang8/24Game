@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/singleplayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/single_player_launch_button" />
+
+        <Button
+            android:id="@+id/multiplayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/multi_player_launch_button" />
+
+        <Button
+            android:id="@+id/practice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/practice_launch_button" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

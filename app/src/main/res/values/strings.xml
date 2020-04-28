@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">24Game</string>
+    <string name="single_player_launch_button">Solo Play</string>
+    <string name="multi_player_launch_button">Online Play</string>
+    <string name="practice_launch_button">Practice</string>
+    <string name="coming_soon">Coming Soon!</string>
+    <string name="backspace_symbol">⌫</string>
+    <string name="enter_solution">Solution</string>
+    <string name="clear_button">Clear</string>
+    <string name="button_filler_text">24</string>
 </resources>
