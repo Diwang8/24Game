@@ -16,6 +16,26 @@ public class DeckOfCards {
         }
     }
 
+    public void randomFour() {
+        int a = 0;
+        int b = 0;
+        int c = 0;
+        int d = 0;
+        a = (int) (Math.random() * (deck.size() + 0.1));
+        b = (int) (Math.random() * (deck.size() + 0.1));
+        c = (int) (Math.random() * (deck.size() + 0.1));
+        d = (int) (Math.random() * (deck.size() + 0.1));
+        current = new ArrayList<>();
+        current.add(deck.get(a).intValue());
+        current.add(deck.get(b).intValue());
+        current.add(deck.get(c).intValue());
+        current.add(deck.get(d).intValue());
+        deck.remove(a);
+        deck.remove(b);
+        deck.remove(c);
+        deck.remove(d);
+    }
+
     public void randomSolvableFromTheDeck() {
         boolean solvable = false;
         int a = 0;
@@ -37,11 +57,8 @@ public class DeckOfCards {
         current.add(deck.get(b).intValue());
         current.add(deck.get(c).intValue());
         current.add(deck.get(d).intValue());
-        deck.remove(a);
-        deck.remove(b);
-        deck.remove(c);
-        deck.remove(d);
     }
+
     public void returnWhenGiveUp() {
         deck.add(current.get(1));
         deck.add(current.get(2));
