@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 /**
  * Abstract class for main 24 game for all game modes.
  */
@@ -83,6 +82,15 @@ public abstract class GamePlay extends AppCompatActivity {
             clear();
         });
 
+        setUpAnswerButtons();
+
+        loadProblem();
+    }
+
+    /**
+     * Sets up give up and submit buttons.
+     */
+    protected void setUpAnswerButtons() {
         TextView giveUpButton = findViewById(R.id.give_up_button);
         giveUpButton.setOnClickListener(v -> {
             String message;
@@ -96,7 +104,7 @@ public abstract class GamePlay extends AppCompatActivity {
                     .setPositiveButton("OK", (unused1, unused2) -> {
                         loadProblem();
                     }).setOnDismissListener(unused -> {
-                        loadProblem();
+                loadProblem();
             });
             builder.create().show();
         });
@@ -118,14 +126,13 @@ public abstract class GamePlay extends AppCompatActivity {
                                 loadProblem();
                             }
                         }).setOnDismissListener(unused -> {
-                            if (correct) {
-                                loadProblem();
-                            }
+                    if (correct) {
+                        loadProblem();
+                    }
                 });
                 builder.create().show();
             }
         });
-        loadProblem();
     }
 
     /**
@@ -299,7 +306,7 @@ public abstract class GamePlay extends AppCompatActivity {
                 result += calculateTerm();
             }
         }
-        System.out.println(result);
+        // System.out.println(result);
         return result;
     }
     /**
@@ -341,7 +348,7 @@ public abstract class GamePlay extends AppCompatActivity {
                 break;
             }
         }
-        System.out.println(result);
+        // System.out.println(result);
         return result;
     }
 }
