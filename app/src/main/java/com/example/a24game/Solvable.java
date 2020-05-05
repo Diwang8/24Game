@@ -1,7 +1,5 @@
 package com.example.a24game;
 
-import java.util.List;
-
 public class Solvable {
     private int a;
     private int b;
@@ -209,22 +207,22 @@ public class Solvable {
 
     public String combine(int m, int n, int opID) {
         String combined = "";
-        if (solutionOpID[4] == 0) {
+        if (opID == 0) {
             combined = "(" + m + "+" + n + ")";
         }
-        if (solutionOpID[4] == 1) {
+        if (opID == 1) {
             combined = "(" + m + "-" + n + ")";
         }
-        if (solutionOpID[4] == 2) {
+        if (opID == 2) {
             combined = "(" + n + "-" + m + ")";
         }
-        if (solutionOpID[4] == 3) {
+        if (opID == 3) {
             combined = "(" + m + "*" + n + ")";
         }
-        if (solutionOpID[4] == 4) {
+        if (opID == 4) {
             combined = "(" + m + "/" + n + ")";
         }
-        if (solutionOpID[4] == 5) {
+        if (opID == 5) {
             combined = "(" + n + "/" + m + ")";
         }
         return combined;
@@ -232,29 +230,29 @@ public class Solvable {
 
     public String combine(String m, int n, int opID) {
         String combined = "";
-        if (solutionOpID[4] == 0) {
+        if (opID == 0) {
             combined = "(" + m + "+" + n + ")";
         }
-        if (solutionOpID[4] == 1) {
+        if (opID == 1) {
             combined = "(" + m + "-" + n + ")";
         }
-        if (solutionOpID[4] == 2) {
+        if (opID == 2) {
             combined = "(" + n + "-" + m + ")";
         }
-        if (solutionOpID[4] == 3) {
+        if (opID == 3) {
             combined = "(" + m + "*" + n + ")";
         }
-        if (solutionOpID[4] == 4) {
+        if (opID == 4) {
             combined = "(" + m + "/" + n + ")";
         }
-        if (solutionOpID[4] == 5) {
+        if (opID == 5) {
             combined = "(" + n + "/" + m + ")";
         }
         return combined;
     }
 
-    public void generateSolutionAsString() {
-        if (isSolvable() == false) {
+    public String generateSolutionAsString() {
+        if (!isSolvable()) {
             solution = "no solution";
         } else {
             String partA;
@@ -262,5 +260,6 @@ public class Solvable {
             String partB = combine(partA, solutionOpID[2], solutionOpID[5]);
             solution = combine(partB, solutionOpID[3], solutionOpID[6]);
         }
+        return solution;
     }
 }

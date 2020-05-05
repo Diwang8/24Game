@@ -40,6 +40,9 @@ public abstract class GamePlay extends AppCompatActivity {
     /** stores whether solution is valid or not */
     protected boolean validity;
 
+    /** stores solvable object for the current problem. */
+    protected Solvable solvable;
+
     /**
      * onCreate for practice mode.
      */
@@ -83,8 +86,8 @@ public abstract class GamePlay extends AppCompatActivity {
         TextView giveUpButton = findViewById(R.id.give_up_button);
         giveUpButton.setOnClickListener(v -> {
             String message;
-            if (isPossible()) {
-                message = getString(R.string.give_up_text_solution,getSolution());
+            if (solvable.isSolvable()) {
+                message = getString(R.string.give_up_text_solution,solvable.generateSolutionAsString());
             } else {
                 message = getString(R.string.give_up_text_impossible);
             }
@@ -188,30 +191,72 @@ public abstract class GamePlay extends AppCompatActivity {
      * Checks whether given solution is valid as an answer to the problem.
      * @return whether the solution is valid or not
      */
-    public boolean isValid() {
-        // all numbers used
+    protected boolean isValid() {
+        if (givenSoln.size() == 0) {
+            return false;
+        }
+        int[] idArray = new int[givenSoln.size()];
+        for (int i = 0; i < idArray.length; i++) {
+            idArray[i] = givenSoln.get(i).getButtonID();
+        }
+        // does not begin or end with operations
+        // except for possibly beginning with ( or ending with ), or beginning with -
+        if (idArray[0] > 4 && idArray[0] != InputIDs.LEFT_PAREN_INPUT
+                && idArray[0] != InputIDs.MINUS_INPUT) return false;
+        if (idArray[idArray.length - 1] > 4 && idArray[idArray.length - 1] != InputIDs.RIGHT_PAREN_INPUT) return false;
+
         boolean[] hasNum = new boolean[4];
-        for (InputButton i : givenSoln) {
-            if (i.getButtonID() < 5) {
-                hasNum[i.getButtonID() - 1] = true;
+        int parenCount = 0;
+        for (int i = 0; i < idArray.length; i++) {
+            // all numbers used
+            if (idArray[i] < 5) {
+                hasNum[idArray[i] - 1] = true;
+            }
+
+            if (i < idArray.length - 1) {
+                // no 2 numbers in a row
+                if (idArray[i] < 5 && idArray[i + 1] < 5) {
+                    return false;
+                }
+
+                // no 2 arithmetic operations in a row
+                if (idArray[i] > 4 && idArray[i] < InputIDs.LEFT_PAREN_INPUT
+                    && idArray[i + 1] > 4 && idArray[i + 1] < InputIDs.LEFT_PAREN_INPUT) {
+                    return false;
+                }
+                // no operations immediately after a left parenthesis or before a right parenthesis
+                // exceptions: minus after a left parentheses, or multiple left parentheses
+                //      or right parentheses in a row are allowed
+                if (idArray[i] == InputIDs.LEFT_PAREN_INPUT && idArray[i + 1] > 4
+                    && idArray[i + 1] != InputIDs.LEFT_PAREN_INPUT
+                        && idArray[i + 1] != InputIDs.MINUS_INPUT) {
+                    return false;
+                }
+                if (idArray[i] > 4 && idArray[i] != InputIDs.RIGHT_PAREN_INPUT
+                        && idArray[i + 1]== InputIDs.RIGHT_PAREN_INPUT) {
+                    return false;
+                }
+            }
+            // parentheses properly matched
+            if (idArray[i] == InputIDs.LEFT_PAREN_INPUT) {
+                parenCount++;
+            } else if (idArray[i] == InputIDs.RIGHT_PAREN_INPUT) {
+                parenCount--;
+            }
+
+            if (parenCount < 0) {
+                return false;
             }
         }
+
+        if (parenCount != 0) return false;
+
+        // all numbers used check
         for (boolean b : hasNum) {
             if (!b) {
                 return false;
             }
         }
-        // no 2 numbers in a row
-
-        // does not begin or end with arithmetic operations
-
-        // no 2 arithmetic operations in a row
-
-        // no operations immediately after a left parenthesis or before a right parenthesis
-        // exceptions: multiple left parentheses or right parentheses in a row are allowed
-
-        // parentheses properly matched
-
         return true;
     }
 
@@ -219,27 +264,85 @@ public abstract class GamePlay extends AppCompatActivity {
      * Checks given solution.
      * @return whether the solution is correct or not.
      */
-    public boolean checkSolution() {
-        //TODO write this
-        return false;
+    protected boolean checkSolution() {
+        position = 0;
+        // Scan for parentheses
+        try {
+            return Math.abs(calculateSubmission() - 24) < 1E-7;
+        } catch (ArithmeticException e) {
+            return false;
+        }
+
     }
 
+    /** tracks position of parser for solution submission. */
+    protected int position;
     /**
-     * Returns solution for the given numbers.
-     * @return solution for given numbers.
+     * Returns value of player submission or some part thereof.
+     * The considered part ranges from the current position to the end of the solution/parenthetical expression.
+     * @return value of evaluated portion
      */
-    public String getSolution() {
-        //TODO write this
-        return ":)";
+    protected double calculateSubmission() {
+        double result = 0;
+        while (position < givenSoln.size()) {
+            int currentID = givenSoln.get(position).getButtonID();
+            if (currentID == InputIDs.MINUS_INPUT) {
+                position++;
+                result -= calculateTerm();
+            } else if (currentID == InputIDs.PLUS_INPUT) {
+                position++;
+                result += calculateTerm();
+            } else if (currentID == InputIDs.RIGHT_PAREN_INPUT){
+                position++;
+                break;
+            } else {
+                result += calculateTerm();
+            }
+        }
+        System.out.println(result);
+        return result;
     }
-
     /**
-     * Returns whether the current problem is possible.
-     * @return whether the current problem is possible.
+     * Returns value of term in player submission. A term is basically anything you reach by a series of
+     * multiplications and divisions.
+     * @return value of evaluated portion
      */
-    public boolean isPossible() {
-        //TODO write this
-        return true;
+    protected double calculateTerm() {
+        double result = 1;
+        while (position < givenSoln.size()) {
+            int currentID = givenSoln.get(position).getButtonID();
+            if (currentID == InputIDs.TIMES_INPUT) {
+                position++;
+                if (givenSoln.get(position).getButtonID() <= 4) {
+                    result *= ((NumButton) givenSoln.get(position)).getValue();
+                    position++;
+                } else {
+                    // must be parenthetical expression
+                    position++;
+                    result *= calculateSubmission();
+                }
+            } else if (currentID == InputIDs.DIVIDES_INPUT) {
+                position++;
+                if (givenSoln.get(position).getButtonID() <= 4) {
+                    result /= ((NumButton) givenSoln.get(position)).getValue();
+                    position++;
+                } else {
+                    // must be parenthetical expression
+                    position++;
+                    result /= calculateSubmission();
+                }
+            } else if (currentID == InputIDs.LEFT_PAREN_INPUT) {
+                position++;
+                result *= calculateSubmission();
+            } else if (currentID <= 4) {
+                result *= ((NumButton) givenSoln.get(position)).getValue();
+                position++;
+            } else {
+                break;
+            }
+        }
+        System.out.println(result);
+        return result;
     }
 }
 
